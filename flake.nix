@@ -33,6 +33,18 @@
               pkgs.postgresql
               pkgs.fswatch
             ];
+            shellHook = ''
+              export PGDATA=$PWD/.postgres
+              export PGPORT=5432
+              if [ ! -d "$PGDATA" ]; then
+                echo "Initializing PostgreSQL database..."
+                initdb -D $PGDATA
+              fi
+              if ! pg_ctl -D $PGDATA status > /dev/null 2>&1; then
+                echo "Starting PostgreSQL..."
+                pg_ctl -D $PGDATA -l postgres.log -o "-k /tmp -p $PGPORT" start
+              fi
+            '';
           };
           defaultPackage = pkgs.escalating-esqueleto;
         };
