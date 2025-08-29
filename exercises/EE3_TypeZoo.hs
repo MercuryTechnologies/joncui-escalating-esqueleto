@@ -17,7 +17,7 @@ The goal of this module is to get you comfortable with some of the many types us
 and some relevant types from outside of it (e.g. `DB` and the function `runDB`).
 
 You could figure out many of these instantly with hoogle or by running the typechecker.
-Try to rely on the hints in hints/EE03*.md instead.
+Try to rely on the hints in hints/EE3*.md instead.
 The goal is fluency, not getting through as quickly as possible.
 
 --
