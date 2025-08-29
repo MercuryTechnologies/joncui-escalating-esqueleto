@@ -18,9 +18,9 @@ Using esqueleto, can you get me everything we know about our flavors?
 The equivalent SQL would be:
 SELECT * FROM flavors;
 
-If you get stuck, you might want to read the hint in hints/EE01_allFlavors.md
+If you get stuck, you might want to read the hint in hints/EE1_allFlavors.md
 
-Once you're done, make sure to compare with the answer in answers/EE01_allFlavors.hs
+Once you're done, make sure to compare with the answer in answers/EE1_allFlavors.hs
 to see if there's any difference
 -}
 a_allFlavors :: DB [Entity Flavor]
