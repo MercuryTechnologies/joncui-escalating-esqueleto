@@ -4,7 +4,7 @@ module EE0_StartingOut where
 
 -- To ensure your setup is working, replace the typed hole below with a boolean value
 a_iWantToLearnEsqueleto :: Bool
-a_iWantToLearnEsqueleto = _
+a_iWantToLearnEsqueleto = True
 
 {-
 

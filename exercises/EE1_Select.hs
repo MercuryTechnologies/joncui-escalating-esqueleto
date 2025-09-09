@@ -25,7 +25,8 @@ to see if there's any difference
 -}
 a_allFlavors :: DB [Entity Flavor]
 a_allFlavors = do
-  _
+  select $ do
+    from $ table @Flavor
 
 {-
 Actually I just want the flavor name values. That would be:
@@ -35,7 +36,9 @@ Ensure you do this flavor->name projection in SQL, not after the fact in Haskell
 -}
 b_allFlavorNameValues :: DB [Value Text]
 b_allFlavorNameValues = do
-  _
+  select $ do
+    f <- from $ table @Flavor
+    pure f.name
 
 {-
 Both queries above return lists of wrapped types. 'Entity' comes from persistent,
@@ -46,7 +49,11 @@ plain '[Text]'? Start by copying the previous query.
 -}
 c_allFlavorNames :: DB [Text]
 c_allFlavorNames = do
-  _
+  values <- select $ do
+    f <- from $ table @Flavor
+    pure $ f.name
+
+  pure $ coerce values
 
 {-
 Let's introduce WHERE clauses.
@@ -54,7 +61,10 @@ A vegan just walked in. Provide all our dairy-free flavors.
 -}
 d_dairyFreeFlavors :: DB [Entity Flavor]
 d_dairyFreeFlavors = do
-  _
+  select $ do
+    f <- from $ table @Flavor
+    where_ $ f.dairyFree ==. val True
+    pure f
 
 {-
 It's often convenient to look up FlavorIds from flavor names. For example:
@@ -65,7 +75,12 @@ Write a query that can take an argument of a list of flavor names, and get their
 -}
 e_flavorIdsFromNames :: [Text] -> DB [FlavorId]
 e_flavorIdsFromNames flavorNames = do
-  _
+  ids <- select $ do
+    f <- from $ table @Flavor
+    where_ $ f.name `in_` valList flavorNames
+    pure f.id
+
+  pure $ coerce ids
 
 {-
 We'd like to run a mildly nefarious targeted ad campaign. What are the emails
@@ -74,6 +89,12 @@ provided a favorite flavor?
 
 Fill in the type as well.
 -}
-f_customersWithoutBirthdaysWithFlavors :: _
+f_customersWithoutBirthdaysWithFlavors :: DB [Email]
 f_customersWithoutBirthdaysWithFlavors = do
-  _
+  emails <- select $ do
+    c <- from $ table @Customer
+    where_ $ isNothing_ c.birthday
+    where_ $ (not_ . isNothing_) c.favoriteFlavor
+    pure c.email
+
+  pure $ coerce emails
