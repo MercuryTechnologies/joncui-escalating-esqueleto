@@ -56,23 +56,23 @@ main = hspec $ do
     -- Just change False to True when your type signature is correct, to check off that test as completed.
 
     it "a_runDB" $ do
-      checkedByHand False
+      checkedByHand True
 
     it "b_select" $ do
-      checkedByHand False
+      checkedByHand True
 
     it "c_val" $ do
-      checkedByHand False
+      checkedByHand True
 
     it "d_orderBy" $ do
-      checkedByHand False
+      checkedByHand True
 
     -- (?.)
     it "e_project" $ do
-      checkedByHand False
+      checkedByHand True
 
     it "f_leftJoin" $ do
-      checkedByHand False
+      checkedByHand True
 
   describe "EE4_Errors" $ do
     it "a_getChocolate" $ do

@@ -1,6 +1,7 @@
 {- HLINT ignore "Use camelCase" -}
 {-# LANGUAGE AllowAmbiguousTypes #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE TypeOperators #-}
 
 module EE3_TypeZoo where
 
@@ -38,7 +39,7 @@ This DB monad matches up with the return type of esqueleto's `select` and simila
 {-
 runDB is a function that takes a DB action and actually runs it on the database
 -}
-a_runDB :: _
+a_runDB :: DB a -> IO a
 a_runDB = undefined
 
 {-
@@ -67,13 +68,13 @@ Finally, `:&` helps us construct joins. Its precedence is to the left.
 {-
 `select` returns a `ReaderT backend m` action (which is the same as `DB`) to grab us a list of rows, and takes an argument...which is up to you to figure out
 -}
-b_select :: (SqlSelect a r, MonadIO m, SqlBackendCanRead backend) => _ -> ReaderT backend m _
+b_select :: (SqlSelect a r, MonadIO m, SqlBackendCanRead backend) => SqlQuery a -> ReaderT backend m [r]
 b_select = undefined
 
 {-
 `val` takes any plain Haskell type which is an instance of `PersistField` and lifts it into Esqueleto land. What's its type?
 -}
-c_val :: PersistField typ => typ -> _
+c_val :: PersistField typ => typ -> SqlExpr typ
 c_val = undefined
 
 {-
@@ -90,7 +91,7 @@ orderBy [desc (countRows :: SqlExpr (Value Int))]
 
 What's the type of `orderBy`?
 -}
-d_orderBy :: _
+d_orderBy :: [SqlExpr OrderBy] -> SqlQuery ()
 d_orderBy = undefined
 
 {-
@@ -107,7 +108,7 @@ Given that, can you introduce `Maybe`s in the right places to produce the correc
 
 The answer/hint are named `EE3e_project` instead of `EE3e_(?.)`
 -}
-(?.) :: (PersistEntity val, PersistField typ) => _ -> EntityField val typ -> _
+(?.) :: (PersistEntity val, PersistField typ) => SqlExpr (Maybe (Entity val)) -> EntityField val typ -> SqlExpr (Value (Maybe typ))
 (?.) = undefined
 
 {-
@@ -122,5 +123,5 @@ fullOuterJoin :: (ToFrom a a', ToFrom b b', ToMaybe a', ToMaybe b', HasOnClause 
 Uncomment the type signature to get started
 -}
 
--- f_leftJoin :: (ToFrom a a', ToFrom b b', _, HasOnClause rhs (_), rhs ~ (b, _ -> SqlExpr (Value Bool))) => a -> rhs -> From (_)
+f_leftJoin :: (ToFrom a a', ToFrom b b', ToMaybe b', HasOnClause rhs (a' :& ToMaybeT b'), rhs ~ (b, (a' :& ToMaybeT b') -> SqlExpr (Value Bool))) => a -> rhs -> From (a' :& ToMaybeT b')
 f_leftJoin = undefined
